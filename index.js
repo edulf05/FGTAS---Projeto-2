@@ -11,7 +11,7 @@ const PORT = 8001
 const HOSTNAME = "localhost"
 
 const conn = knex( {
-    client : "mysql" ,
+    client : "mysql2" ,
     connection : {
         host : HOSTNAME ,
         user : "root" , 
@@ -32,30 +32,26 @@ app.get("/cidade", (req, res, next) => {
             "cidades.*",             // Pega todos os campos da tabela 'produtos'
         )
         // 4. Mantém a ordenação
-        .orderBy("cidades.nome", "asc")
+        .orderBy("cidades.nome_cidade", "asc")
         // 5. Retorna os dados
         .then(dados => res.json(dados))
         .catch(next);
 });
 
 app.get("/cliente", (req, res, next) => {
-    // 1. Inicia a query na tabela de produtos
     conn("clientes")
-        // 2. Seleciona os campos desejados de AMBAS as tabelas
         .select(
-            "clientes.*",             // Pega todos os campos da tabela 'produto'
-            "clientes.id AS clienteId" // Pega o campo 'id' da tabela 'clientes' e renomeia para 'clienteId'
+            "clientes.*",
+            "clientes.id_cliente AS clienteId",
+            "cidades.nome_cidade AS cidadeNome"
         )
-        // 3. Junta (JOIN) a tabela 'categoria'
         .leftJoin(
-            "pedidos",                            // Tabela a ser juntada
-            "cliente.cidades_id",                 // Chave estrangeira na tabela 'cliente'
+            "cidades",                   // tabela relacionada
+            "clientes.cidade_id",       // campo FK em clientes
             "=",
-            "cidades.id"                          // Chave primária na tabela 'cidade'
+            "cidades.id_cidade"          // campo PK em cidades
         )
-        // 4. Mantém a ordenação
-        .orderBy("cliente.nome", "asc")
-        // 5. Retorna os dados
+        .orderBy("clientes.nome_cliente", "asc")
         .then(dados => res.json(dados))
         .catch(next);
 });
@@ -66,17 +62,17 @@ app.get("/pedido", (req, res, next) => {
         // 2. Seleciona os campos desejados de AMBAS as tabelas
         .select(
             "pedidos.*",             // Pega todos os campos da tabela 'produto'
-            "pedidos.id AS pedidosId" // Pega o campo 'id' da tabela 'clientes' e renomeia para 'clienteId'
+            "pedidos.id_pedido AS pedidosId" // Pega o campo 'id' da tabela 'clientes' e renomeia para 'clienteId'
         )
         // 3. Junta (JOIN) a tabela 'categoria'
         .leftJoin(
             "pedidos_produto",                            // Tabela a ser juntada
-            "pedidos.cidades_id",                 // Chave estrangeira na tabela 'cliente'
+            "pedidos.cidade_id",                 // Chave estrangeira na tabela 'cliente'
             "=",
-            "cidades.id"                          // Chave primária na tabela 'cidade'
+            "cidades.id_cidade"                          // Chave primária na tabela 'cidade'
         )
         // 4. Mantém a ordenação
-        .orderBy("cliente.nome", "asc")
+        .orderBy("pedidos.id_pedido", "asc")
         // 5. Retorna os dados
         .then(dados => res.json(dados))
         .catch(next);
@@ -131,19 +127,19 @@ app.get("/product/:idProd", (req, res, next) => {
 });
 
 // Rota GET para listar todas as categorias
-app.get("/category", (req, res, next) => {
-    conn("categoria")
-        .orderBy("nome", "asc")
+app.get("/categoria", (req, res, next) => {
+    conn("categorias")
+        .orderBy("nome_categoria", "asc")
         .then(categorias => res.json(categorias))
         .catch(next);
 });
 
 // Rota GET para buscar uma categoria por ID
-app.get("/category/:id", (req, res, next) => {
+app.get("/categoria/:id", (req, res, next) => {
     const { id } = req.params;
     
-    conn("categoria")
-        .where({ id })
+    conn("categorias")
+        .where({ id_categoria: id })
         .first() // Limita a busca a apenas um registro
         .then(categoria => {
             if (!categoria) {
