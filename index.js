@@ -38,6 +38,30 @@ app.get("/cidade", (req, res, next) => {
         .catch(next);
 });
 
+app.get("/cidade/:idProd", (req, res, next) => {
+    // Você capturou o ID da URL aqui:
+    const idProduto = req.params.idProd; 
+    
+    conn("cidades")
+        // 1. Aplica o JOIN com a tabela 'categoria' (remover se não for usar)
+        // 2. Seleciona os campos desejados, incluindo o nome da categoria (ajustado)
+        .select(
+            "cidades.*",                             // Todos os campos do produto
+        )
+        // 3. Filtra pelo ID do produto
+        // AQUI ESTÁ O ERRO: Troque 'idCidades' por 'idProduto'
+        .where("cidades.id_cidade", idProduto) // <-- Corrigido!
+        .first()
+        .then(dados => {
+            if (!dados) {
+                // É mais comum usar 404 (Not Found) para um recurso não encontrado por ID.
+                return res.status(404).json({ mensagem: "Nenhuma cidade encontrada com este ID." });
+            }
+            res.json(dados);
+        })
+        .catch(next);
+});
+
 app.get("/cliente", (req, res, next) => {
     conn("clientes")
         .select(
@@ -66,13 +90,71 @@ app.get("/pedido", (req, res, next) => {
         )
         // 3. Junta (JOIN) a tabela 'categoria'
         .leftJoin(
-            "pedidos_produto",                            // Tabela a ser juntada
-            "pedidos.cidade_id",                 // Chave estrangeira na tabela 'cliente'
+            "clientes",                            // Tabela a ser juntada
+            "pedidos.cliente_id",                 // Chave estrangeira na tabela 'cliente'
             "=",
-            "cidades.id_cidade"                          // Chave primária na tabela 'cidade'
+            "clientes.id_cliente"                          // Chave primária na tabela 'cidade'
         )
         // 4. Mantém a ordenação
         .orderBy("pedidos.id_pedido", "asc")
+        // 5. Retorna os dados
+        .then(dados => res.json(dados))
+        .catch(next);
+});
+
+app.get("/produto", (req, res, next) => {
+    // 1. Inicia a query na tabela de produtos
+    conn("produtos")
+        // 2. Seleciona os campos desejados de AMBAS as tabelas
+        .select(
+            "produtos.*",             // Pega todos os campos da tabela 'produto'
+            "produtos.id_produto AS produtoId" // Pega o campo 'id' da tabela 'clientes' e renomeia para 'clienteId'
+        )
+        // 3. Junta (JOIN) a tabela 'categoria'
+        .leftJoin(
+            "categorias",                            // Tabela a ser juntada
+            "produtos.categoria_id",                 // Chave estrangeira na tabela 'cliente'
+            "=",
+            "categorias.id_categoria"                          // Chave primária na tabela 'cidade'
+        )
+        // 4. Mantém a ordenação
+        .orderBy("produtos.id_produto", "asc")
+        // 5. Retorna os dados
+        .then(dados => res.json(dados))
+        .catch(next);
+});
+
+app.get("/pedido_produto", (req, res, next) => {
+    // 1. Inicia a query na tabela de produtos
+    conn("pedidos_produtos")
+        // 2. Seleciona os campos desejados de AMBAS as tabelas
+        .select(
+            "pedidos_produtos.*",             // Pega todos os campos da tabela 'produto'
+        )
+        // 3. Junta (JOIN) a tabela 'categoria'
+       // O ponto de partida da sua query (ex: knex, Laravel DB::table, etc.)
+
+    // 1. PRIMEIRO JOIN: Junta com a tabela 'pedidos'
+    .leftJoin(
+        "pedidos",
+        "pedidos_produtos.pedido_id",
+        "=",
+        "pedidos.id_pedido"
+    )
+    
+    // 2. SEGUNDO JOIN: Junta com a tabela 'produtos'
+    .leftJoin(
+        "produtos",
+        "pedidos_produtos.produto_id",
+        "=",
+        "produtos.id_produto"
+    )
+    
+    // 3. Mantém a ordenação
+    .orderBy("pedidos_produtos.pedido_id", "asc") 
+    // ^ Use 'pedido_id' ou outra coluna, pois 'id_pedido' sozinho 
+    //   pode ser ambíguo após os joins.
+    // .orderBy("pedidos_produtos.id_pedido", "asc")  <-- Se você tem um ID de pedido_produtos
         // 5. Retorna os dados
         .then(dados => res.json(dados))
         .catch(next);
@@ -96,35 +178,6 @@ app.get( "/product/last" , (req, res, next)=>{
         .then( dados => res.json( dados ) )
         .catch( next )
 })
-app.get("/product/:idProd", (req, res, next) => {
-    const idProduto = req.params.idProd;
-    
-    conn("produto")
-        // 1. Aplica o JOIN com a tabela 'categoria'
-        .leftJoin(
-            "categoria",                            // Tabela a ser juntada
-            "produto.codCategoria",                 // Chave estrangeira na tabela 'produto'
-            "=",
-            "categoria.id"                          // Chave primária na tabela 'categoria'
-        )
-        // 2. Seleciona os campos desejados, incluindo o nome da categoria
-        .select(
-            "produto.*",                             // Todos os campos do produto
-            "categoria.nome AS nomeCategoria"       // Nome da categoria, renomeado
-        )
-        // 3. Filtra pelo ID do produto
-        .where("produto.id", idProduto)
-        .first()
-        .then(dados => {
-            if (!dados) {
-                // É mais comum usar 404 (Not Found) para um recurso não encontrado por ID,
-                // mas mantive sua estrutura de erro para compatibilidade.
-                return next(errors(200, "Nenhum Produto encontrado")); 
-            }
-            res.json(dados);
-        })
-        .catch(next);
-});
 
 // Rota GET para listar todas as categorias
 app.get("/categoria", (req, res, next) => {
