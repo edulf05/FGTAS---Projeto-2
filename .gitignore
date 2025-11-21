@@ -1,5 +1,6 @@
-package-lock.json
+/package-lock.json
 node_modules/
 .env
-package.json
-banco.sql
+/package.json
+
+
