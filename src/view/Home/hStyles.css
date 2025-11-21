@@ -1,0 +1,140 @@
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    width: 100%;
+    background-color: rgb(29, 1, 85, 1);
+    color: #fff;
+    padding: 15px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.header-container {
+    max-width: 1000px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+#logout-btn {
+    padding: 8px 15px;
+    background-color: #ffffff;
+    color: rgb(29, 1, 85, 1);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#logout-btn:hover {
+    background-color: rgba(255, 0, 0, 0.788);
+    border: 2px solid rgb(29, 1, 85, 1);
+    color: #fff;
+    transition: 1s;
+}
+
+main {
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+/* Estilo do Carrossel (Faixa Rotativa) */
+.carousel-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative;
+    height: 50px; /* Altura fixa da faixa */
+}
+
+.carousel-track {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300%; /* Largura total dos itens */
+    animation: carousel-scroll 15s linear infinite;
+}
+
+.carousel-item {
+    width: 33.333%; /* Cada item ocupa um terço da largura */
+    text-align: center;
+    line-height: 50px; /* Centraliza verticalmente o texto */
+}
+
+.carousel-item p {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Animação do carrossel */
+@keyframes carousel-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-66.666%); } /* Rola para mostrar o último item */
+}
+
+/* Estilo dos Botões de Menu */
+.menu-container {
+    display: flex;
+    flex-direction: column; /* Alinha os itens em uma coluna */
+    gap: 20px;
+}
+
+.menu-btn {
+    width: 100%; /* Ocupa a largura total do contêiner */
+    padding: 25px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: rgb(29, 1, 85, 1);
+    font-size: 18px;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.menu-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.menu-btn .icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.menu-btn.disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+    pointer-events: none;
+}

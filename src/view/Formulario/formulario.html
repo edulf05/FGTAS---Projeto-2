@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Atendimento FGTAS</title>
+    <link rel="stylesheet" href="fStyles.css">
+</head>
+<body>
+
+    <a href="../Home/home.html" class="back-btn">
+        &#x2190; Voltar
+    </a>
+
+
+    <div class="container">
+        <h1>Registro de Atendimento FGTAS</h1>
+        <form id="atendimento-form">
+
+            <div class="form-group">
+                <label for="forma-atendimento">Forma do Atendimento:</label>
+                <select id="forma-atendimento" required>
+                    <option value="">Selecione...</option>
+                    <option value="presencial">Presencial</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="ligacao">Ligação Telefônica</option>
+                    <option value="email">E-mail</option>
+                    <option value="redes-sociais">Redes Sociais</option>
+                    <option value="teams">Teams</option>
+                    <option value="outra">Outra</option>
+                </select>
+            </div>
+
+            <div id="perfil-section" class="form-section">
+                <div class="form-group">
+                    <label for="perfil">Quem estou atendendo:</label>
+                    <select id="perfil" required>
+                        <option value="">Selecione...</option>
+                        <option value="empregador">Empregador</option>
+                        <option value="trabalhador">Trabalhador</option>
+                        <option value="outras-agencias">Outras agências</option>
+                        <option value="ads">ADS</option>
+                        <option value="setores-fgtas">Setores da FGTAS</option>
+                        <option value="mercado-de-trabalho">Interessado de informações sobre o Mercado de Trabalho</option>
+                        <option value="outra">Outra</option>
+                    </select>
+                </div>
+
+                <div id="campos-empregador" class="form-section">
+                    <div class="form-group">
+                        <label for="nome-empregador">Nome do Empregador:</label>
+                        <input type="text" id="nome-empregador">
+                    </div>
+                    <div class="form-group">
+                        <label for="cnpj">CNPJ do Empregador:</label>
+                        <input type="text" id="cnpj" placeholder="00.000.000/0000-00" maxlength="18">
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone de contato:</label>
+                        <input type="tel" id="telefone" placeholder="(XX) XXXXX-XXXX">
+                    </div>
+                </div>
+            </div>
+
+            <div id="tipo-atendimento-section" class="form-section">
+                <div class="form-group">
+                    <label for="tipo-atendimento">Tipo de atendimento:</label>
+                    <select id="tipo-atendimento" required>
+                        </select>
+                </div>
+            </div>
+
+            <button type="submit">Enviar Atendimento</button>
+
+        </form>
+    </div>
+
+    <script src="fScript.js"></script>
+
+</body>
+</html>

@@ -1,7 +1,10 @@
-const app = require("./app");
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const usuarioRoutes = require('./routes/usuarioRoutes');
 
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json());
+app.use('/', usuarioRoutes);
 
-app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando na porta ${PORT}`);
-});
+app.listen(3000, () => console.log('API rodando na porta 3000'));

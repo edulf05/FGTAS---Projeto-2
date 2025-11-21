@@ -3,9 +3,11 @@ const app = express();
 const cors = require("cors");
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Importa as rotas
+const usuarioRoutes = require("./routes/usuarioRoutes");
 const cidadeRoutes = require("./routes/cidadeRoutes");
 const clienteRoutes = require("./routes/clienteRoutes");
 const pedidoRoutes = require("./routes/pedidoRoutes");
@@ -13,6 +15,7 @@ const produtoRoutes = require("./routes/produtoRoutes");
 const categoriaRoutes = require("./routes/categoriaRoutes");
 
 // Usa as rotas com prefixos
+app.use("/usuarios", usuarioRoutes);
 app.use("/cidades", cidadeRoutes);
 app.use("/clientes", clienteRoutes);
 app.use("/pedidos", pedidoRoutes);

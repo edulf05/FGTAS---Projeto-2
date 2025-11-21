@@ -6,7 +6,7 @@ const conn = knex({
     host: "localhost",
     user: "root",
     password: "",
-    database: "sdm_25_2",
+    database: "fgtas",
   },
 });
 
