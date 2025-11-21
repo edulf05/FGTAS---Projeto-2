@@ -1,18 +1,11 @@
-
-// utils/auth.js
-
-// AJUSTE ESTA URL para onde a sua API Node.js/JS Puro está rodando
-
-// ...existing code...
 const loginButton = document.getElementById('Login');
 const loginForm = document.getElementById('loginForm');
 const messageElement = document.getElementById('message');
 
-// Ajuste aqui para a rota real do backend que processa login.
-// Ex.: 'http://localhost:3000/usuarios/login' ou 'http://localhost:3000/fgtas/usuarios/login'
-const API_URL = 'http://localhost:3000/usuarios/login';
+// Ajuste para sua rota (routes usam '/usuario/login')
+const API_URL = 'http://localhost:3000/usuario/login';
+
 if (loginButton) {
-    // evitar redirecionamento direto; delegar ao envio do formulário
     loginButton.addEventListener('click', function(event) {
         event.preventDefault();
         if (loginForm) loginForm.requestSubmit();
@@ -31,12 +24,18 @@ async function handleLogin() {
     messageElement.textContent = 'Verificando credenciais...';
     messageElement.style.color = 'blue';
 
-    const emailEl = document.getElementById('email');
+    const loginEl = document.getElementById('login');
     const senhaEl = document.getElementById('senha');
-    const email = emailEl ? emailEl.value : '';
+    const login = loginEl ? loginEl.value.trim() : '';
     const senha = senhaEl ? senhaEl.value : '';
     
-    const loginData = { email, senha };
+    if (!login || !senha) {
+        messageElement.textContent = 'Preencha usuário/email e senha.';
+        messageElement.style.color = 'red';
+        return;
+    }
+
+    const loginData = { login, senha };
 
     try {
         const response = await fetch(API_URL, {
@@ -51,15 +50,15 @@ async function handleLogin() {
             messageElement.textContent = result.message || 'Login bem-sucedido!';
             messageElement.style.color = 'green';
 
-            if (result.token) localStorage.setItem('auth_token', result.token);
+            // opcional: salvar usuário no localStorage
+            if (result.usuario) localStorage.setItem('usuario', JSON.stringify(result.usuario));
 
-            // Redirecionar para a página correta dentro do seu view (ajuste caminho se necessário)
             setTimeout(() => {
                 window.location.href = '../Home/home.html';
-            }, 800);
+            }, 600);
         } else {
-            const errorMessage = result.message || 'Erro de autenticação.';
-            messageElement.textContent = `Falha no login: ${errorMessage}`;
+            const errorMessage = result.message || 'Credenciais inválidas.';
+            messageElement.textContent = errorMessage;
             messageElement.style.color = 'red';
         }
 
@@ -69,4 +68,3 @@ async function handleLogin() {
         messageElement.style.color = 'red';
     }
 }
-// ...existing code...

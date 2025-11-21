@@ -1,31 +1,49 @@
 const Usuario = require("../models/usuarioModel")
+const bcrypt = require('bcrypt');
 
 module.exports = {
 
+  // ...existing code...
   async login(req, res, next) {
     try {
-      const { email, senha } = req.body;
-      if (!email || !senha) return res.status(400).json({ message: 'Email e senha são obrigatórios.' });
+      const { login, senha } = req.body;
+      if (!login || !senha) return res.status(400).json({ message: 'Usuário/email e senha são obrigatórios.' });
 
-      const usuario = await Usuario.buscarPorEmail(email);
+      const usuario = await Usuario.buscarPorLogin(login);
+      if (!usuario) return res.status(401).json({ message: 'Credenciais inválidas.' });
 
-      if (!usuario) {
-        return res.status(401).json({ message: 'Credenciais inválidas.' });
+      const senhaDb = usuario.senha_usuario || usuario.senha || '';
+      let match = false;
+
+      // bcrypt hash (ex.: $2...)
+      if (typeof senhaDb === 'string' && senhaDb.startsWith && senhaDb.startsWith('$2')) {
+        match = await bcrypt.compare(senha, senhaDb);
+      }
+      // SHA-256 hex (64 caracteres hex armazenado pelo trigger SHA2)
+      else if (typeof senhaDb === 'string' && /^[a-f0-9]{64}$/i.test(senhaDb)) {
+        const crypto = require('crypto');
+        const hash = crypto.createHash('sha256').update(senha).digest('hex');
+        match = (hash === senhaDb);
+      }
+      // fallback: comparação direta (texto simples)
+      else {
+        match = senha === senhaDb;
       }
 
-      const bcrypt = require('bcrypt');
-      const match = await bcrypt.compare(senha, usuario.senha);
       if (!match) return res.status(401).json({ message: 'Credenciais inválidas.' });
 
-      // Retorne os dados que precisar (não retorne a senha)
-      const { id, nome_usuario } = usuario;
-      // opcional: gere token JWT aqui e retorne { token, message, usuario }
-      res.json({ message: 'Login realizado com sucesso.', usuario: { id, nome_usuario, email } });
+      const responseUsuario = {
+        id: usuario.id_usuario || usuario.id,
+        nome_usuario: usuario.nome_usuario,
+        email_usuario: usuario.email_usuario || usuario.email
+      };
+
+      res.json({ message: 'Login realizado com sucesso.', usuario: responseUsuario });
     } catch (err) {
       next(err);
     }
   },
-    
+
   async listar(req, res, next) {
     try {
       const usuarios = await Usuario.listar();
