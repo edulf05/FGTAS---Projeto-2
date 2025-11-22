@@ -1,3 +1,4 @@
+const API_URL = 'http://localhost:3000/atendimento';
 // Campo de Tipo de Atendimento
 const tiposAtendimentoFixos = [
     "Carteira de Trabalho, SD, Vagas",
@@ -17,6 +18,102 @@ const tipoAtendimentoSectionEl = document.getElementById('tipo-atendimento-secti
 const tipoAtendimentoEl = document.getElementById('tipo-atendimento');
 const telefoneEl = document.getElementById('telefone');
 const cnpjEl = document.getElementById('cnpj');
+
+document.getElementById('atendimento-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    // obter usuario logado do localStorage (definido no login)
+    const usuarioLogado = localStorage.getItem('usuario');
+    const atendenteMatricula = usuarioLogado ? (JSON.parse(usuarioLogado).id_usuario || JSON.parse(usuarioLogado).id || '') : '';
+
+    if (!atendenteMatricula) {
+        alert('Você precisa estar logado para registrar um atendimento.');
+        return;
+    }
+
+    const perfilSelecionado = perfilEl.value;
+
+    if (perfilSelecionado === 'empregador') {
+        const cnpj = cnpjEl.value;
+        if (!validarCNPJ(cnpj)) {
+            alert("Por favor, insira um CNPJ válido.");
+            return;
+        }
+    }
+
+    const payload = {
+        forma_atendimento: formaAtendimentoEl.value,
+        perfil: perfilEl.value,
+        nome_empregador: document.getElementById('nome-empregador').value || null,
+        cnpj: cnpjEl.value || null,
+        telefone_contato: telefoneEl.value || null,
+        tipo_atendimento: tipoAtendimentoEl.value,
+        atendente_matricula: atendenteMatricula, // <-- agora enviado
+        observacoes: null
+    };
+
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        // tratar resposta (já existia)
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch(e) { data = { __raw: text }; }
+
+        if (res.ok) {
+            alert('Atendimento salvo com sucesso.');
+            document.getElementById('atendimento-form').reset();
+            perfilSectionEl.classList.remove('active');
+            tipoAtendimentoSectionEl.classList.remove('active');
+            camposEmpregadorEl.classList.remove('active');
+            listarAtendimentos();
+        } else {
+            alert((data && data.message) ? data.message : (data.__raw || 'Erro ao salvar atendimento.'));
+            console.error('Resposta do servidor:', data.__raw || data);
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Erro de conexão com o servidor.');
+    }
+});
+
+// função para listar atendimentos (exemplo: log no console; adapte para mostrar em UI)
+async function listarAtendimentos() {
+    try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Erro ao obter atendimentos');
+        const rows = await res.json();
+        console.log('Atendimentos:', rows);
+        // aqui você pode renderizar uma tabela na página se desejar
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// função para excluir atendimento por id (exemplo)
+async function excluirAtendimento(id) {
+    if (!confirm('Confirma exclusão do atendimento?')) return;
+    try {
+        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (res.ok) {
+            alert(data.message || 'Excluído com sucesso.');
+            listarAtendimentos();
+        } else {
+            alert(data.message || 'Erro ao excluir.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Erro de conexão.');
+    }
+}
+
+// chama listar ao carregar a página (opcional)
+listarAtendimentos();
 
 // Função para popular o campo de Tipo de Atendimento
 function popularTipoAtendimento() {
@@ -171,3 +268,4 @@ function validarCNPJ(cnpj) {
            
     return true;
 }
+

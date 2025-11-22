@@ -1,9 +1,10 @@
-const Usuario = require("../models/usuarioModel")
+const Usuario = require("../models/usuarioModel");
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+
 
 module.exports = {
 
-  // ...existing code...
   async login(req, res, next) {
     try {
       const { login, senha } = req.body;
@@ -15,17 +16,16 @@ module.exports = {
       const senhaDb = usuario.senha_usuario || usuario.senha || '';
       let match = false;
 
-      // bcrypt hash (ex.: $2...)
+      // bcrypt
       if (typeof senhaDb === 'string' && senhaDb.startsWith && senhaDb.startsWith('$2')) {
         match = await bcrypt.compare(senha, senhaDb);
       }
-      // SHA-256 hex (64 caracteres hex armazenado pelo trigger SHA2)
+      // SHA-256 hex (trigger SHA2 no MySQL)
       else if (typeof senhaDb === 'string' && /^[a-f0-9]{64}$/i.test(senhaDb)) {
-        const crypto = require('crypto');
         const hash = crypto.createHash('sha256').update(senha).digest('hex');
         match = (hash === senhaDb);
       }
-      // fallback: comparação direta (texto simples)
+      // plain text
       else {
         match = senha === senhaDb;
       }
@@ -33,7 +33,7 @@ module.exports = {
       if (!match) return res.status(401).json({ message: 'Credenciais inválidas.' });
 
       const responseUsuario = {
-        id: usuario.id_usuario || usuario.id,
+        id_usuario: usuario.id_usuario || usuario.id,
         nome_usuario: usuario.nome_usuario,
         email_usuario: usuario.email_usuario || usuario.email
       };
