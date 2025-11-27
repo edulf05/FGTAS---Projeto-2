@@ -2,7 +2,6 @@ const Usuario = require("../models/usuarioModel");
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-
 module.exports = {
 
   async login(req, res, next) {
@@ -16,26 +15,23 @@ module.exports = {
       const senhaDb = usuario.senha_usuario || usuario.senha || '';
       let match = false;
 
-      // bcrypt
       if (typeof senhaDb === 'string' && senhaDb.startsWith && senhaDb.startsWith('$2')) {
         match = await bcrypt.compare(senha, senhaDb);
-      }
-      // SHA-256 hex (trigger SHA2 no MySQL)
-      else if (typeof senhaDb === 'string' && /^[a-f0-9]{64}$/i.test(senhaDb)) {
+      } else if (typeof senhaDb === 'string' && /^[a-f0-9]{64}$/i.test(senhaDb)) {
         const hash = crypto.createHash('sha256').update(senha).digest('hex');
         match = (hash === senhaDb);
-      }
-      // plain text
-      else {
+      } else {
         match = senha === senhaDb;
       }
 
       if (!match) return res.status(401).json({ message: 'Credenciais inválidas.' });
 
       const responseUsuario = {
-        id_usuario: usuario.id_usuario || usuario.id,
+        id_usuario: usuario.id_usuario,
         nome_usuario: usuario.nome_usuario,
-        email_usuario: usuario.email_usuario || usuario.email
+        email_usuario: usuario.email_usuario,
+        adm_usuario: usuario.adm_usuario,
+        ativo: usuario.ativo ? 1 : 0
       };
 
       res.json({ message: 'Login realizado com sucesso.', usuario: responseUsuario });
@@ -46,8 +42,8 @@ module.exports = {
 
   async listar(req, res, next) {
     try {
-      const usuarios = await Usuario.listar();
-      res.json(usuarios);
+      const rows = await Usuario.listar();
+      res.json(rows);
     } catch (err) {
       next(err);
     }
@@ -55,14 +51,10 @@ module.exports = {
 
   async buscarPorId(req, res, next) {
     try {
-      const { id } = req.params;
-      const usuario = await Usuario.buscarPorId(id);
-
-      if (!usuario) {
-        return res.status(404).json({ mensagem: "Usuário não encontrada." });
-      }
-
-      res.json(usuario);
+      const id = req.params.id;
+      const row = await Usuario.buscarPorId(id);
+      if (!row) return res.status(404).json({ message: "Usuário não encontrado." });
+      res.json(row);
     } catch (err) {
       next(err);
     }
@@ -70,61 +62,66 @@ module.exports = {
 
   async inserir(req, res, next) {
     try {
-      const { nome_usuario, email_usuario, senha_usuario } = req.body;
-
-      if (!nome_usuario) {
-        return res.status(400).json({ erro: "O campo nome_usuario é obrigatório." });
-      }
-      if (!email_usuario) {
-        return res.status(400).json({ erro: "O campo email_usuario é obrigatório." });
-      }
-      if (!senha_usuario) {
-        return res.status(400).json({ erro: "O campo senha_usuario é obrigatório." });
+      const body = req.body || {};
+      if (!body.nome_usuario || !body.email_usuario || !body.senha_usuario) {
+        return res.status(400).json({ message: "Campos obrigatórios: nome_usuario, email_usuario, senha_usuario." });
       }
 
-      const [id] = await Usuario.inserir({ nome_usuario, email_usuario, senha_usuario });
+      const existente = await Usuario.buscarPorLogin(body.email_usuario);
+      if (existente) return res.status(409).json({ message: "Email ou usuário já cadastrado." });
 
-      res.status(201).json({
-        mensagem: "Usuario cadastrada com sucesso!",
-        id_usuario: id,
-        nome_usuario,
-        email_usuario
-      });
-    } catch (err){
-      if (err.code === 'ER_DUP_ENTRY') {
-      return res.status(400).json({ error: 'Email já cadastrado!' });
-      }
+      const adm = body.adm_usuario ? 1 : 0;
+      const ativo = (typeof body.ativo !== 'undefined') ? (body.ativo ? 1 : 0) : 1;
+
+      const novo = {
+        nome_usuario: body.nome_usuario,
+        email_usuario: body.email_usuario,
+        senha_usuario: body.senha_usuario,
+        adm_usuario: adm,
+        ativo: ativo
+      };
+
+      const result = await Usuario.inserir(novo);
+      return res.status(201).json({ id: result[0], message: "Usuário criado." });
+    } catch (err) {
+      console.error(err);
       next(err);
     }
-
-},
+  },
 
   async atualizar(req, res, next) {
     try {
-      const { id } = req.params;
-      const atualizado = await Usuario.atualizar(id, req.body);
+      const id = req.params.id;
+      const body = req.body || {};
 
-      if (!atualizado) {
-        return res.status(404).json({ mensagem: "Usuario não encontrado." });
-      }
+      const user = await Usuario.buscarPorId(id);
+      if (!user) return res.status(404).json({ message: "Usuário não encontrado." });
 
-      res.json({ mensagem: "Usuario atualizado com sucesso!" });
+      const dados = {};
+      if (body.nome_usuario) dados.nome_usuario = body.nome_usuario;
+      if (body.email_usuario) dados.email_usuario = body.email_usuario;
+      if (body.senha_usuario) dados.senha_usuario = body.senha_usuario;
+      if (typeof body.adm_usuario !== 'undefined') dados.adm_usuario = body.adm_usuario ? 1 : 0;
+      if (typeof body.ativo !== 'undefined') dados.ativo = body.ativo ? 1 : 0;
+
+      await Usuario.atualizar(id, dados);
+      return res.json({ message: "Usuário atualizado." });
     } catch (err) {
+      console.error(err);
       next(err);
     }
   },
 
   async excluir(req, res, next) {
     try {
-      const { id } = req.params;
-      const deletado = await Usuario.excluir(id);
+      const id = req.params.id;
+      const user = await Usuario.buscarPorId(id);
+      if (!user) return res.status(404).json({ message: "Usuário não encontrado." });
 
-      if (!deletado) {
-        return res.status(404).json({ mensagem: "Usuario não encontrado." });
-      }
-
-      res.json({ mensagem: "Usuario excluído com sucesso!" });
+      await Usuario.excluir(id);
+      return res.json({ message: "Usuário removido." });
     } catch (err) {
+      console.error(err);
       next(err);
     }
   }

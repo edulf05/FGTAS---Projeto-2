@@ -12,7 +12,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: url('/C:/xampp/htdocs/fgtas2/FGTAS---Projeto-2/src/public/img-FGTAS.jpg');
+    background: url('/C:/xampp/htdocs/fgtas/api-fgtas/src/public/img-FGTAS.jpg');
     background-size: cover;
     background-position: center;
 } 

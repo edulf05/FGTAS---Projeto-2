@@ -1,16 +1,16 @@
 const conn = require("../config/knex");
 
 module.exports = {
-  
   listar() {
-    return conn("usuarios").orderBy("nome_usuario", "asc");
+    return conn("usuarios")
+      .select("id_usuario", "nome_usuario", "email_usuario", "data_usuario", "editado_usuario", "adm_usuario", "ativo")
+      .orderBy("nome_usuario", "asc");
   },
 
   buscarPorId(id) {
     return conn("usuarios").where("id_usuario", id).first();
   },
 
-  // buscar por email_usuario OU nome_usuario
   buscarPorLogin(login) {
     return conn("usuarios")
       .where("email_usuario", login)
@@ -23,11 +23,11 @@ module.exports = {
   },
 
   atualizar(id, dados) {
-    return conn("usuarios").where("id_usuario", id).update(dados);
+    const payload = { ...dados, editado_usuario: conn.fn.now() };
+    return conn("usuarios").where("id_usuario", id).update(payload);
   },
 
   excluir(id) {
-    return conn("usuarios").where("id_usuario", id).delete();
+    return conn("usuarios").where("id_usuario", id).del();
   }
-
 };

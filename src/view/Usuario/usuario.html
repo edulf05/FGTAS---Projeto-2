@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Usuários</title>
+    <link rel="stylesheet" href="uStyles.css">
+</head>
+<body>
+
+     <a href="../Home/home.html" class="back-btn">
+        &#x2190; Voltar
+    </a>
+
+    <script>
+      (function(){
+        const raw = localStorage.getItem('usuario');
+        let isAdmin = false;
+        try {
+          const u = raw ? JSON.parse(raw) : null;
+          isAdmin = !!(u && (u.adm_usuario === 1 || u.adm_usuario === '1' || u.adm_usuario === true));
+        } catch(e) { isAdmin = false; }
+        if (!isAdmin) {
+          document.documentElement.innerHTML = `
+            <!DOCTYPE html>
+            <html lang="pt-BR">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width,initial-scale=1">
+              <title>Acesso negado</title>
+              <style>
+                body{font-family:Arial,Helvetica,sans-serif;background:#c5c5c5;color:#1d0155;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}
+                .box{background:#fff;padding:28px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);text-align:center;max-width:420px}
+                a{display:inline-block;margin-top:16px;padding:8px 14px;background:#1d0155;color:#fff;text-decoration:none;border-radius:6px}
+              </style>
+            </head>
+            <body>
+              <div class="box">
+                <h2>Está página é exclusiva para administradores.</h2>
+                <p>Você não possui permissão para acessar esta área.</p>
+                <a href="../Home/home.html">Voltar para o Início</a>
+              </div>
+            </body>
+            </html>`;
+        }
+      })();
+    </script>
+
+    <header>
+        <h1>Gestão de Usuários</h1>
+        <button id="btnNovo" class="btn btn-primary">+ Novo Usuário</button>
+    </header>
+
+    <section class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Criado</th>
+                    <th>Editado</th>
+                    <th>Administrador</th>
+                    <th>Ativo</th>
+                    <th class="center">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="listaUsuarios">
+                <!-- Conteúdo carregado pelo JS -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+
+            <span id="closeModal" class="close">&times;</span>
+
+            <h2 id="modalTitulo">Novo Usuário</h2>
+
+            <form id="formUsuario">
+                <input type="hidden" id="userId">
+
+                <label>Nome:</label>
+                <input type="text" id="nome" required>
+
+                <label>Email:</label>
+                <input type="email" id="email" required>
+
+                <label>Senha:</label>
+                <input type="password" id="senha" placeholder="Deixe em branco para manter a senha" >
+
+                <label>Administrador:</label>
+                <input type="checkbox" id="adm">
+
+                <!-- perfil removido -->
+
+                <label>Ativo:</label>
+                <input type="checkbox" id="ativo" checked>
+
+                <button type="submit" class="btn btn-primary btn-full">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="uScript.js"></script>
+</body>
+</html>

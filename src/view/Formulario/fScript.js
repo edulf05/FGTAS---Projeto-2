@@ -65,7 +65,6 @@ document.getElementById('atendimento-form').addEventListener('submit', async fun
         try { data = JSON.parse(text); } catch(e) { data = { __raw: text }; }
 
         if (res.ok) {
-            alert('Atendimento salvo com sucesso.');
             document.getElementById('atendimento-form').reset();
             perfilSectionEl.classList.remove('active');
             tipoAtendimentoSectionEl.classList.remove('active');
@@ -214,7 +213,7 @@ document.getElementById('atendimento-form').addEventListener('submit', function(
         }
     }
 
-    alert('Formulário enviado com sucesso (simulação).');
+    alert('Formulário enviado com sucesso.');
     console.log({
         formaAtendimento: formaAtendimentoEl.value,
         perfil: perfilEl.value,
