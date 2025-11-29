@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+    <link rel="stylesheet" href="rStyles.css">
+</head>
+<body>
+
+    <nav class="topbar">
+        <h1>Relatórios do Sistema</h1>
+        <button id="novoRelatorio" class="btn-primary">+ Criar Relatório</button>
+    </nav>
+
+    <!-- BOTÃO VOLTAR (agora fixo no canto inferior esquerdo) -->
+    <a href="../Home/home.html" class="back-btn">← Voltar</a>
+
+    <!-- FILTROS -->
+    <section class="filters">
+
+        <div class="filter-box">
+            <label>Pesquisar:</label>
+            <input type="text" id="filtroTexto" placeholder="Filtrar por título ou descrição...">
+        </div>
+
+        <div class="filter-box">
+            <label>Paciente:</label>
+            <select id="filtroPaciente">
+                <option value="">Todos</option>
+                <!-- preenchido via JS -->
+            </select>
+        </div>
+
+        <div class="filter-box">
+            <label>Tipo de atendimento:</label>
+            <select id="filtroAtendimento">
+                <option value="">Todos</option>
+                <option>Consulta</option>
+                <option>Retorno</option>
+                <option>Exame</option>
+                <option>Acompanhamento</option>
+            </select>
+        </div>
+
+        <div class="filter-box">
+            <label>Data inicial:</label>
+            <input type="date" id="dataInicio">
+        </div>
+
+        <div class="filter-box">
+            <label>Data final:</label>
+            <input type="date" id="dataFim">
+        </div>
+
+        <button id="btnFiltrar" class="btn-secondary apply-filter">Aplicar Filtros</button>
+    </section>
+
+    <!-- LISTA DE RELATÓRIOS -->
+    <section class="cards-container" id="listaRelatorios">
+        <!-- Conteúdo carregado automaticamente pelo JS -->
+    </section>
+
+
+    <!-- MODAL -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+
+            <span id="closeModal" class="close">&times;</span>
+
+            <h2>Novo Relatório</h2>
+
+            <form id="formRelatorio">
+                <label for="titulo">Título do relatório:</label>
+                <input type="text" id="titulo" required>
+
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" rows="4" required></textarea>
+
+                <label for="paciente">Paciente:</label>
+                <select id="paciente" required></select>
+
+                <label for="tipo">Tipo de atendimento:</label>
+                <select id="tipo" required>
+                    <option>Consulta</option>
+                    <option>Retorno</option>
+                    <option>Exame</option>
+                    <option>Acompanhamento</option>
+                </select>
+
+                <button class="btn-primary full">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="rScript.js"></script>
+</body>
+</html>

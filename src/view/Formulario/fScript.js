@@ -48,7 +48,7 @@ document.getElementById('atendimento-form').addEventListener('submit', async fun
         cnpj: cnpjEl.value || null,
         telefone_contato: telefoneEl.value || null,
         tipo_atendimento: tipoAtendimentoEl.value,
-        atendente_matricula: atendenteMatricula, // <-- agora enviado
+        atendente_matricula: atendenteMatricula,
         observacoes: null
     };
 
@@ -59,7 +59,6 @@ document.getElementById('atendimento-form').addEventListener('submit', async fun
             body: JSON.stringify(payload)
         });
 
-        // tratar resposta (já existia)
         const text = await res.text();
         let data;
         try { data = JSON.parse(text); } catch(e) { data = { __raw: text }; }

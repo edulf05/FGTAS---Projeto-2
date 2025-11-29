@@ -58,3 +58,41 @@ FOREIGN KEY (atendente_matricula)
 REFERENCES usuarios(id_usuario)
 ON UPDATE CASCADE  
 ON DELETE RESTRICT; 
+
+CREATE TABLE relatorios_atendimentos (
+    id_relatorio INT AUTO_INCREMENT PRIMARY KEY,
+
+    usuario_matricula INT NOT NULL,
+
+    filtro_atendente VARCHAR(255) NULL,
+    filtro_forma_atendimento ENUM(
+        'presencial', 
+        'whatsapp', 
+        'ligacao', 
+        'email', 
+        'redes-sociais', 
+        'teams', 
+        'outra'
+    ) NOT NULL,
+    filtro_perfil ENUM(
+        'empregador', 
+        'trabalhador', 
+        'outras-agencias', 
+        'ads', 
+        'setores-fgtas', 
+        'mercado-de-trabalho', 
+        'outra'
+    ) NOT NULL,
+
+    data_geracao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE relatorios_atendimentos
+ADD COLUMN data_edicao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER data_geracao;
+
+ALTER TABLE relatorios_atendimentos
+ADD CONSTRAINT fk_relatorio_usuario
+FOREIGN KEY (usuario_matricula)
+REFERENCES usuarios(id_usuario)
+ON UPDATE CASCADE
+ON DELETE RESTRICT;

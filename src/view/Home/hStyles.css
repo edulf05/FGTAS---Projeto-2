@@ -1,4 +1,4 @@
-    body {
+body {
     font-family: Arial, sans-serif;
     background-color: #c5c5c5;
     margin: 0;
@@ -22,6 +22,12 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.logo-fgtas {
+    height: 70px;
+    margin-right: -50px;
+    content: url('/opt/lampp/htdocs/fgtas/api-fgtas/src/public/fgtas.png');
 }
 
 header h1 {

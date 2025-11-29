@@ -1,0 +1,198 @@
+/* ====== RESET ====== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: #ececec;
+    min-height: 100vh;
+}
+
+/* ====== TOPO ====== */
+.topbar {
+    background: rgb(29, 1, 85);
+    color: white;
+    padding: 18px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topbar h1 {
+    font-size: 22px;
+}
+
+/* ====== BOTÃO VOLTAR (agora fixo) ====== */
+
+.back-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    text-decoration: none;
+    background: rgb(29, 1, 85);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: .2s;
+}
+
+.back-btn:hover {
+    background: white;
+    color: rgb(29, 1, 85);
+    border: 2px solid rgb(29, 1, 85);
+}
+
+/* ====== FILTROS ====== */
+
+.filters {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    background: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+.filter-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-box label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.filter-box input,
+.filter-box select {
+    padding: 10px;
+    width: 210px;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+}
+
+.apply-filter {
+    align-self: flex-end;
+    height: 44px;
+}
+
+/* ====== CARDS ====== */
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 0 25px 25px;
+}
+
+.card {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+.card h3 {
+    color: rgb(29, 1, 85);
+    font-size: 18px;
+}
+
+.card p {
+    margin-top: 6px;
+    color: #444;
+}
+
+.card-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ====== BOTÕES ====== */
+
+.btn-primary {
+    background: rgb(29, 1, 85);
+    color: #fff;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #6f6f6f;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-danger {
+    background: #d60000;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.full {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* ====== MODAL ====== */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    width: 420px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+form label {
+    margin-top: 12px;
+    display: block;
+    font-weight: bold;
+}
+
+form input,
+form textarea,
+form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    margin-top: 4px;
+}
