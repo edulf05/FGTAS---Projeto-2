@@ -10,7 +10,7 @@
 
     <nav class="topbar">
         <h1>Relatórios do Sistema</h1>
-        <button id="novoRelatorio" class="btn-primary">+ Criar Relatório</button>
+        <button id="toggleView" class="btn-secondary">Alternar Visualização</button>
     </nav>
 
     <!-- BOTÃO VOLTAR (agora fixo no canto inferior esquerdo) -->
@@ -25,21 +25,54 @@
         </div>
 
         <div class="filter-box">
-            <label>Paciente:</label>
+            <label>Usuário:</label>
             <select id="filtroPaciente">
                 <option value="">Todos</option>
                 <!-- preenchido via JS -->
             </select>
         </div>
 
+        <!-- ADICIONADO: Forma de atendimento -->
         <div class="filter-box">
-            <label>Tipo de atendimento:</label>
-            <select id="filtroAtendimento">
+            <label>Forma de atendimento:</label>
+            <select id="filtroForma">
                 <option value="">Todos</option>
-                <option>Consulta</option>
-                <option>Retorno</option>
-                <option>Exame</option>
-                <option>Acompanhamento</option>
+                <option value="presencial">Presencial</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="ligacao">Ligação</option>
+                <option value="email">E-mail</option>
+                <option value="redes-sociais">Redes Sociais</option>
+                <option value="teams">Teams</option>
+                <option value="outra">Outra</option>
+            </select>
+        </div>
+
+        <!-- ADICIONADO: Perfil -->
+        <div class="filter-box">
+            <label>Perfil:</label>
+            <select id="filtroPerfil">
+                <option value="">Todos</option>
+                <option value="empregador">Empregador</option>
+                <option value="trabalhador">Trabalhador</option>
+                <option value="outras-agencias">Outras agências</option>
+                <option value="ads">ADS</option>
+                <option value="setores-fgtas">Setores FGTAS</option>
+                <option value="mercado-de-trabalho">Mercado de Trabalho</option>
+                <option value="outra">Outra</option>
+            </select>
+        </div>
+
+           <div class="filter-box">
+            <label>Tipo de atendimento:</label>
+            <select id="filtroTipo">
+                <option value="">Todos</option>
+                <option value="carteira-de-trabalho,-sd,-vagas">Carteira de Trabalho, SD, Vagas</option>
+                <option value="programa-gaúcho-do-artesanato">Programa Gaúcho do Artesanato</option>
+                <option value="vida-centro-humanístico">Vida Centro Humanístico</option>
+                <option value="orientações-sobre-empreendedorismo">Orientações sobre empreendedorismo</option>
+                <option value="orientações-sobre-cursos-de-qualificação">Orientações sobre cursos de qualificação</option>
+                <option value="informações-sobre-mercado-de-trabalho">Informações sobre mercado de trabalho</option>
+                <option value="outra">Outra</option>
             </select>
         </div>
 

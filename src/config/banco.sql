@@ -96,3 +96,6 @@ FOREIGN KEY (usuario_matricula)
 REFERENCES usuarios(id_usuario)
 ON UPDATE CASCADE
 ON DELETE RESTRICT;
+
+ALTER TABLE relatorios_atendimentos
+ADD COLUMN filtro_tipo_atendimento VARCHAR(255) NULL AFTER filtro_perfil;

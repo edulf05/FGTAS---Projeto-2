@@ -1,0 +1,41 @@
+* { box-sizing: border-box; margin:0; padding:0; font-family: "Segoe UI", sans-serif; }
+body { background:#f0f0f2; min-height:100vh; color:#222; }
+
+.topbar { background: rgb(29,1,85); color:#fff; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; }
+.topbar h1 { font-size:18px; }
+
+.back-btn { text-decoration:none; color:#fff; background:transparent; padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,.12); }
+.back-btn:hover { background:rgba(255,255,255,0.06); }
+
+.filters { display:flex; gap:12px; flex-wrap:wrap; padding:18px; margin:18px; background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+.filter-box { display:flex; flex-direction:column; }
+.filter-box label { font-weight:600; margin-bottom:6px; font-size:13px; }
+.filter-box input, .filter-box select { padding:8px 10px; width:200px; border-radius:6px; border:1px solid #bbb; }
+
+.apply-filter { background:#6f6f6f; color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; align-self:flex-end; }
+.apply-filter:hover { background:#771fb6; transform:translateY(-2px); }
+
+.cards-container { padding:12px 20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+
+/* reusa estilo de card/lista similar a rStyles.css */
+.card, .list-item { background:#fff; border-radius:8px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.06); }
+.card h3, .list-item h3 { color: rgb(29,1,85); margin-bottom:8px; }
+
+.card p, .list-item p { color:#444; margin:6px 0; }
+
+.card-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+.btn-primary { background:#771fb6; color:#fff; padding:8px 12px; border-radius:6px; border:none; cursor:pointer; }
+.btn-secondary { background:#6f6f6f; color:#fff; padding:8px 12px; border-radius:6px; border:none; cursor:pointer; }
+
+.modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); justify-content:center; align-items:center; }
+.modal-content { background:#fff; padding:20px; border-radius:8px; width:420px; max-width:94%; position:relative; }
+.close { position:absolute; right:12px; top:10px; cursor:pointer; font-size:20px; }
+
+.full { width:100%; margin-top:12px; }
+
+/* modo lista (quando necessário) */
+.cards-container.list-mode { display:block; padding:12px 20px; }
+.list-item { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+.list-item-content { flex:1; }
+.list-item-actions { display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+.download-btn { background:#771fb6; color:#fff; border:none; padding:8px 10px; border-radius:6px; cursor:pointer; }

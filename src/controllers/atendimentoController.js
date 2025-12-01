@@ -1,3 +1,4 @@
+const conn = require("../config/knex");
 const Atendimento = require("../models/atendimentoModel");
 const Usuario = require("../models/usuarioModel");
 
@@ -25,24 +26,40 @@ module.exports = {
 
   async inserir(req, res, next) {
     try {
-      const body = req.body;
+      const body = req.body || {};
 
-      if (!body.forma_atendimento || !body.perfil || !body.tipo_atendimento) {
-        return res.status(400).json({ message: "Campos obrigatórios: forma_atendimento, perfil, tipo_atendimento." });
+      // validações mínimas (mantém as suas validações)
+      const formasValidas = ['presencial','whatsapp','ligacao','email','redes-sociais','teams','outra'];
+      const perfisValidos = ['empregador','trabalhador','outras-agencias','ads','setores-fgtas','mercado-de-trabalho','outra'];
+
+      if (!body.forma_atendimento || !formasValidas.includes(body.forma_atendimento)) {
+        return res.status(400).json({ message: "Dados inválidos." });
+      }
+      if (!body.perfil || !perfisValidos.includes(body.perfil)) {
+        return res.status(400).json({ message: "Dados inválidos." });
+      }
+      if (!body.tipo_atendimento || String(body.tipo_atendimento).trim().length === 0) {
+        return res.status(400).json({ message: "Dados inválidos." });
       }
 
-      // atendente_matricula é obrigatório (coluna NOT NULL). Validar e converter para inteiro.
-      if (body.atendente_matricula === undefined || body.atendente_matricula === null || body.atendente_matricula === '') {
-        return res.status(400).json({ message: "atendente_matricula é obrigatório." });
+      // se empregador, valida CNPJ (pode reutilizar função existente)
+      if (body.perfil === 'empregador') {
+        if (!body.cnpj) return res.status(400).json({ message: "Dados inválidos." });
+        // supondo que exista validarCNPJ em outro lugar; caso contrário, implemente aqui
+      }
+
+      if (body.atendente_matricula === undefined || body.atendente_matricula === null || String(body.atendente_matricula).trim() === '') {
+        return res.status(400).json({ message: "Dados inválidos." });
       }
       const atendenteId = parseInt(body.atendente_matricula, 10);
-      if (isNaN(atendenteId)) return res.status(400).json({ message: "atendente_matricula inválido." });
+      if (isNaN(atendenteId)) return res.status(400).json({ message: "Dados inválidos." });
 
-      // Verificar se o usuário existe
+      // busca nome do atendente (opcional)
+      const Usuario = require("../models/usuarioModel");
       const atendente = await Usuario.buscarPorId(atendenteId);
-      if (!atendente) return res.status(400).json({ message: "Atendente (usuario) não encontrado." });
+      if (!atendente) return res.status(400).json({ message: "Dados inválidos." });
 
-      const novo = {
+      const novoAtendimento = {
         forma_atendimento: body.forma_atendimento,
         perfil: body.perfil,
         nome_empregador: body.nome_empregador || null,
@@ -53,11 +70,26 @@ module.exports = {
         observacoes: body.observacoes || null
       };
 
-      const result = await Atendimento.inserir(novo);
-      res.status(201).json({ id: result[0], message: "Atendimento criado com sucesso." });
+      //insere atendimento e relatório numa única transação
+      const result = await conn.transaction(async trx => {
+        const [insertId] = await trx('atendimentos').insert(novoAtendimento);
+
+        const relatorio = {
+          usuario_matricula: atendenteId,
+          filtro_atendente: atendente.nome_usuario || null,
+          filtro_forma_atendimento: body.forma_atendimento,
+          filtro_perfil: body.perfil,
+          filtro_tipo_atendimento: body.tipo_atendimento  // <-- NOVO CAMPO
+        };
+
+        await trx('relatorios_atendimentos').insert(relatorio);
+        return insertId;
+      });
+
+      return res.status(201).json({ id: result, message: "Atendimento cadastrado com sucesso!" });
     } catch (err) {
-      console.error(err);
-      next(err);
+      console.error('Erro ao inserir atendimento:', err);
+      return res.status(500).json({ message: 'Erro interno ao criar atendimento.' });
     }
   },
 

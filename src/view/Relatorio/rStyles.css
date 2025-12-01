@@ -38,6 +38,7 @@ body {
     border-radius: 6px;
     font-weight: bold;
     transition: .2s;
+    z-index: 99999; /* garante que fique na frente de tudo */
 }
 
 .back-btn:hover {
@@ -80,7 +81,96 @@ body {
 .apply-filter {
     align-self: flex-end;
     height: 44px;
+    transition: background .18s, color .18s, transform .12s;
 }
+.apply-filter:hover {
+    background: #771fb6; /* roxo mais dinâmico */
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+#toggleView {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#toggleView:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+/* ====== MODO LISTA ====== */
+.cards-container.list-mode {
+    display: block;
+    padding: 10px 25px 25px;
+}
+
+/* item em lista agora usa layout flex com área de conteúdo e ações */
+.list-item {
+    position: relative;
+    background: #fff;
+    padding: 14px 18px 14px 26px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* linha fina vertical à esquerda que ocupa praticamente toda a altura do item */
+.list-item::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    bottom: 8px;
+    width: 3px;
+    background: rgb(29, 1, 85);
+    border-radius: 2px;
+}
+
+/* área de conteúdo que ocupa o espaço principal */
+.list-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.list-item-content h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    color: rgb(29, 1, 85);
+}
+.list-item-content p { margin: 6px 0; color:#333; }
+
+/* area de ações alinhada à direita */
+.list-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+/* botão de download no modo lista (canto direito) */
+.download-btn {
+    background: #771fb6;
+    color: #fff;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.download-btn:hover {
+    background: #5b1490;
+    transform: translateY(-2px);
+}
+
+/* mantém outros estilos */
+.cards-container.list-mode .card { transform: none; box-shadow: none; }
 
 /* ====== CARDS ====== */
 
@@ -120,10 +210,15 @@ body {
     gap: 10px;
 }
 
+.card-actions:hover {
+    color: #5b1490;
+    transform: translateY(-2px);
+}
+
 /* ====== BOTÕES ====== */
 
 .btn-primary {
-    background: rgb(29, 1, 85);
+    background: #771fb6;
     color: #fff;
     border: none;
     padding: 10px 14px;

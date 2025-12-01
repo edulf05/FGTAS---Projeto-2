@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Editar Relatórios</title>
+  <link rel="stylesheet" href="eStyle.css">
+</head>
+<body>
+
+  <!-- checagem imediata de admin -->
+  <script>
+    (function(){
+      const raw = localStorage.getItem('usuario');
+      try {
+        const u = raw ? JSON.parse(raw) : null;
+        const isAdmin = !!(u && (u.adm_usuario === 1 || u.adm_usuario === '1' || u.adm_usuario === true));
+        if (!isAdmin) {
+          document.documentElement.innerHTML = `
+            <!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Acesso negado</title>
+            <style>body{font-family:Arial,Helvetica,sans-serif;background:#f7f7f7;color:#1d0155;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}
+            .box{background:#fff;padding:28px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);text-align:center;max-width:420px}
+            a{display:inline-block;margin-top:16px;padding:8px 14px;background:#1d0155;color:#fff;text-decoration:none;border-radius:6px}
+            </style></head><body><div class="box"><h2>Está página é exclusiva para administradores.</h2><p>Você não possui permissão para acessar esta área.</p><a href="../Home/home.html">Voltar para o Início</a></div></body></html>
+          `;
+        }
+      } catch(e) { location.href='../Home/home.html'; }
+    })();
+  </script>
+
+  <nav class="topbar">
+    <h1>Edição de Relatórios</h1>
+    <a href="../Home/home.html" class="back-btn">← Voltar</a>
+  </nav>
+
+  <section class="filters">
+    <div class="filter-box">
+      <label>Pesquisar:</label>
+      <input type="text" id="filtroTexto" placeholder="Pesquisar id, usuário ou texto...">
+    </div>
+
+    <div class="filter-box">
+            <label>Usuário:</label>
+            <select id="filtroPaciente">
+                <option value="">Todos</option>
+                <!-- preenchido via JS -->
+            </select>
+        </div>
+
+    <div class="filter-box">
+      <label>Forma de Atendimento:</label>
+      <select id="filtroForma">
+        <option value="">Todos</option>
+        <option value="presencial">Presencial</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="ligacao">Ligação</option>
+        <option value="email">E-mail</option>
+        <option value="redes-sociais">Redes Sociais</option>
+        <option value="teams">Teams</option>
+        <option value="outra">Outra</option>
+      </select>
+    </div>
+
+     <div class="filter-box">
+            <label>Perfil:</label>
+            <select id="filtroPerfil">
+                <option value="">Todos</option>
+                <option value="empregador">Empregador</option>
+                <option value="trabalhador">Trabalhador</option>
+                <option value="outras-agencias">Outras agências</option>
+                <option value="ads">ADS</option>
+                <option value="setores-fgtas">Setores FGTAS</option>
+                <option value="mercado-de-trabalho">Mercado de Trabalho</option>
+                <option value="outra">Outra</option>
+            </select>
+        </div>
+
+   <div class="filter-box">
+            <label>Tipo de atendimento:</label>
+            <select id="filtroTipo">
+                <option value="">Todos</option>
+                <option value="carteira-de-trabalho,-sd,-vagas">Carteira de Trabalho, SD, Vagas</option>
+                <option value="programa-gaúcho-do-artesanato">Programa Gaúcho do Artesanato</option>
+                <option value="vida-centro-humanístico">Vida Centro Humanístico</option>
+                <option value="orientações-sobre-empreendedorismo">Orientações sobre empreendedorismo</option>
+                <option value="orientações-sobre-cursos-de-qualificação">Orientações sobre cursos de qualificação</option>
+                <option value="informações-sobre-mercado-de-trabalho">Informações sobre mercado de trabalho</option>
+                <option value="outra">Outra</option>
+            </select>
+        </div>
+
+
+    <div class="filter-box">
+      <label>Data inicial:</label>
+      <input type="date" id="dataInicio">
+    </div>
+
+    <div class="filter-box">
+      <label>Data final:</label>
+      <input type="date" id="dataFim">
+    </div>
+
+    <button id="btnFiltrar" class="apply-filter">Aplicar Filtros</button>
+  </section>
+
+  <section class="cards-container" id="listaRelatorios"></section>
+
+  <!-- Modal edição -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <h2>Editar Relatório</h2>
+      <form id="formEditar">
+        <input type="hidden" id="editId">
+        <br>
+        <label>Forma de atendimento:</label>
+        <select id="editForma" required>
+          <option value="presencial">Presencial</option>
+          <option value="whatsapp">WhatsApp</option>
+          <option value="ligacao">Ligação</option>
+          <option value="email">E-mail</option>
+          <option value="redes-sociais">Redes Sociais</option>
+          <option value="teams">Teams</option>
+          <option value="outra">Outra</option>
+        </select>
+        <br>
+        <br>
+
+        <label>Tipo de atendimento:</label>
+        <select type="editTipo" id="editTipo" required>
+                <option value="carteira-de-trabalho,-sd,-vagas">Carteira de Trabalho, SD, Vagas</option>
+                <option value="programa-gaúcho-do-artesanato">Programa Gaúcho do Artesanato</option>
+                <option value="vida-centro-humanístico">Vida Centro Humanístico</option>
+                <option value="orientações-sobre-empreendedorismo">Orientações sobre empreendedorismo</option>
+                <option value="orientações-sobre-cursos-de-qualificação">Orientações sobre cursos de qualificação</option>
+                <option value="informações-sobre-mercado-de-trabalho">Informações sobre mercado de trabalho</option>
+                <option value="outra">Outra</option>
+        </select>
+        <br>
+        <br>
+
+        <label>Perfil:</label>
+        <select id="editPerfil" required>
+          <option value="empregador">Empregador</option>
+          <option value="trabalhador">Trabalhador</option>
+          <option value="outras-agencias">Outras agências</option>
+          <option value="ads">ADS</option>
+          <option value="setores-fgtas">Setores FGTAS</option>
+          <option value="mercado-de-trabalho">Mercado de Trabalho</option>
+          <option value="outra">Outra</option>
+        </select>
+        <br>
+        <br>
+
+        <p><small>Data criação: <span id="createdAt"></span></small></p>
+        <p><small>Última edição: <span id="editedAt"></span></small></p>
+
+        <button type="submit" class="btn-primary full">Salvar alteração</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="eScript.js"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 const API_URL = 'http://localhost:3000/atendimento';
-// Campo de Tipo de Atendimento
+
 const tiposAtendimentoFixos = [
     "Carteira de Trabalho, SD, Vagas",
     "Programa Gaúcho do Artesanato",
