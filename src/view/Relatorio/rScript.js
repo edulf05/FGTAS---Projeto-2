@@ -123,10 +123,31 @@ function populatePacienteFilter(rows) {
 }
 
 function downloadRelatorio(id) {
-  // abre endpoint que retorna CSV para o relatório (tenta buscar por id via q)
-  // ajuste backend se quiser endpoint específico /relatorios/:id/csv
-  const url = `${API}?q=${encodeURIComponent(String(id))}&format=csv`;
-  window.open(url, '_blank');
+  const url = `${API}/${encodeURIComponent(String(id))}/csv`;
+
+  fetch(url, { method: 'GET' })
+    .then(res => {
+      if (!res.ok) throw new Error('Erro ao gerar CSV: ' + res.status);
+      return res.blob();
+    })
+    .then(blob => {
+      const filename = `relatorio${id}.csv`;
+      const blobUrl = window.URL.createObjectURL(new Blob([blob], { type: 'text/csv;charset=utf-8' }));
+      // abre em nova aba apenas com esse CSV
+      window.open(blobUrl, '_blank');
+      // inicia download automático
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60 * 1000);
+    })
+    .catch(err => {
+      console.error('Erro download CSV:', err);
+      alert('Não foi possível baixar o CSV. Verifique o console.');
+    });
 }
 
 btnFiltrar.addEventListener('click', fetchRelatorios);

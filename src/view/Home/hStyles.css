@@ -126,6 +126,29 @@ main {
     font-size: 18px;
     font-weight: bold;
     transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; /* necessário para posicionar badge */
+}
+
+/* pequena faixa vermelha 'ADMIN' no canto direito superior dos botões admin-only */
+.menu-btn .admin-badge {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: #e53935; /* vermelho */
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 12px;
+    letter-spacing: .4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+/* opcional: destacar um pouco mais quando hover no botão admin */
+.menu-btn.admin-only:hover .admin-badge {
+    transform: translateY(-2px);
 }
 
 .menu-btn:hover {

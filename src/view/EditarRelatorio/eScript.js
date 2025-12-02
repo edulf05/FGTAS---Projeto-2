@@ -52,20 +52,20 @@ async function fetchUsuarios() {
     }
     const rows = await res.json();
 
-    // mapear usuarios únicos presentes em relatorios (usuario_matricula)
+    // mapear usuarios únicos presentes em relatorios (usuario_matricula) e usar nome como value
     const map = new Map();
     rows.forEach(r => {
       const id = r.usuario_matricula;
       const nome = (r.filtro_atendente || r.usuario_nome || String(id)).trim();
-      if (id && !map.has(String(id))) {
-        map.set(String(id), nome);
+      if (nome && !map.has(nome)) {
+        map.set(nome, { id, nome });
       }
     });
 
-    // ordenar por nome e montar options
-    const options = Array.from(map.entries())
-      .sort((a, b) => a[1].localeCompare(b[1]))
-      .map(([id, nome]) => `<option value="${id}">${nome} (${id})</option>`)
+    // ordenar por nome e montar options (value = nome para pesquisar por filtro_atendente)
+    const options = Array.from(map.values())
+      .sort((a, b) => a.nome.localeCompare(b.nome))
+      .map(u => `<option value="${u.nome}">${u.nome} (${u.id})</option>`)
       .join('');
 
     filtroPaciente.innerHTML = '<option value="">Todos</option>' + options;
@@ -172,8 +172,31 @@ formEditar.addEventListener('submit', async (e) => {
 });
 
 function downloadRelatorio(id) {
-  const url = `${API}?q=${encodeURIComponent(String(id))}&format=csv`;
-  window.open(url, '_blank');
+  const url = `${API}/${encodeURIComponent(String(id))}/csv`;
+
+  fetch(url, { method: 'GET' })
+    .then(res => {
+      if (!res.ok) throw new Error('Erro ao gerar CSV: ' + res.status);
+      return res.blob();
+    })
+    .then(blob => {
+      const filename = `relatorio${id}.csv`;
+      const blobUrl = window.URL.createObjectURL(new Blob([blob], { type: 'text/csv;charset=utf-8' }));
+      // abre em nova aba apenas com esse CSV
+      window.open(blobUrl, '_blank');
+      // inicia download automático
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60 * 1000);
+    })
+    .catch(err => {
+      console.error('Erro download CSV:', err);
+      alert('Não foi possível baixar o CSV. Verifique o console.');
+    });
 }
 
 document.getElementById('btnFiltrar').addEventListener('click', fetchRelatorios);
