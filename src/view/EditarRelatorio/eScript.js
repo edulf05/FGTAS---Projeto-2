@@ -20,6 +20,12 @@ const editTipo = document.getElementById('editTipo');
 const createdAt = document.getElementById('createdAt');
 const editedAt = document.getElementById('editedAt');
 
+// NOVOS CAMPOS
+const empregadorFields = document.getElementById('empregadorFields');
+const editNomeEmpregador = document.getElementById('editNomeEmpregador');
+const editCnpj = document.getElementById('editCnpj');
+const editTelefone = document.getElementById('editTelefone');
+
 function getLoggedUser() {
   try { return JSON.parse(localStorage.getItem('usuario') || 'null'); } catch(e){ return null; }
 }
@@ -97,6 +103,12 @@ function renderList(rows) {
     return;
   }
   rows.forEach(r => {
+    const empregadorHtml = (r.filtro_perfil === 'empregador') ? `
+      <p><strong>Nome Empregador:</strong> ${r.nome_empregador || ''}</p>
+      <p><strong>CNPJ:</strong> ${r.cnpj || ''}</p>
+      <p><strong>Telefone contato:</strong> ${r.telefone_contato || ''}</p>
+    ` : '';
+
     const item = document.createElement('div');
     item.className = 'card';
     item.innerHTML = `
@@ -105,6 +117,7 @@ function renderList(rows) {
       <p><strong>Forma:</strong> ${r.filtro_forma_atendimento}</p>
       <p><strong>Tipo:</strong> ${r.filtro_tipo_atendimento || ''}</p>
       <p><strong>Perfil:</strong> ${r.filtro_perfil}</p>
+      ${empregadorHtml}
       <p><small>Gerado em: ${r.data_geracao ? new Date(r.data_geracao).toLocaleString() : ''}</small></p>
       <p><small>Última edição: ${r.data_edicao ? new Date(r.data_edicao).toLocaleString() : ''}</small></p>
       <div class="card-actions">
@@ -116,6 +129,17 @@ function renderList(rows) {
   });
 }
 
+if (editPerfil) {
+  editPerfil.addEventListener('change', () => {
+    if (editPerfil.value === 'empregador') {
+      empregadorFields.style.display = '';
+    } else {
+      empregadorFields.style.display = 'none';
+    }
+  });
+}
+
+// na abertura da modal preencher campos adicionais
 window.abrirEditar = async function(id) {
   try {
     const res = await fetch(`${API}?q=${encodeURIComponent(String(id))}`, { headers: adminHeader() });
@@ -128,8 +152,20 @@ window.abrirEditar = async function(id) {
     editForma.value = r.filtro_forma_atendimento || 'presencial';
     editPerfil.value = r.filtro_perfil || 'empregador';
     editTipo.value = r.filtro_tipo_atendimento || '';
+    // novos campos
+    editNomeEmpregador.value = r.nome_empregador || '';
+    editCnpj.value = r.cnpj || '';
+    editTelefone.value = r.telefone_contato || '';
+
     createdAt.textContent = r.data_geracao ? new Date(r.data_geracao).toLocaleString() : '';
     editedAt.textContent = r.data_edicao ? new Date(r.data_edicao).toLocaleString() : '';
+
+    // mostrar campos se for empregador
+    if (editPerfil.value === 'empregador') {
+      empregadorFields.style.display = '';
+    } else {
+      empregadorFields.style.display = 'none';
+    }
 
     modal.style.display = 'flex';
   } catch (err) {
@@ -152,6 +188,18 @@ formEditar.addEventListener('submit', async (e) => {
     filtro_tipo_atendimento: editTipo.value
   };
 
+  // incluir campos do empregador se presentes (ou quando perfil = empregador)
+  if (editPerfil.value === 'empregador') {
+    payload.nome_empregador = editNomeEmpregador.value || null;
+    payload.cnpj = editCnpj.value || null;
+    payload.telefone_contato = editTelefone.value || null;
+  } else {
+    // se perfil não é empregador, enviar null para evitar dados inconsistentes se desejar
+    payload.nome_empregador = null;
+    payload.cnpj = null;
+    payload.telefone_contato = null;
+  }
+
   try {
     const res = await fetch(`${API}/${id}`, {
       method: 'PUT',
@@ -163,7 +211,7 @@ formEditar.addEventListener('submit', async (e) => {
       throw new Error(t || 'Erro ao salvar');
     }
     modal.style.display = 'none';
-    fetchRelatorios();
+    await fetchRelatorios();
     alert('Relatório atualizado.');
   } catch (err) {
     console.error(err);

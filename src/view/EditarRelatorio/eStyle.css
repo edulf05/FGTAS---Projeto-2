@@ -16,6 +16,33 @@ body { background:#c5c5c5; min-height:100vh; color:#222; }
 .apply-filter:hover { background:#771fb6; transform:translateY(-2px); }
 
 .cards-container { padding:12px 20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+/* reusa estilo de card/lista similar a rStyles.css */
+.card, .list-item { background:#fff; border-radius:8px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.06); }
+.card h3, .list-item h3 { color: rgb(29,1,85); margin-bottom:8px; }
+
+.card p, .list-item p { color:#444; margin:6px 0; }
+
+/* ----- Ajuste: posicionar ações no canto inferior direito no modo cartões ----- */
+/* aplica somente quando não está no modo lista */
+.cards-container:not(.list-mode) .card {
+    position: relative;          /* contexto para posicionamento absoluto das ações */
+    padding-bottom: 64px;        /* reserva espaço para os botões sem aumentar a altura visual */
+}
+
+.cards-container:not(.list-mode) .card-actions {
+    position: absolute;
+    right: 18px;                 /* alinha com a margem interna do card */
+    bottom: 14px;
+    margin-top: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* botão padrão de ações */
+.card-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+
+.cards-container { padding:12px 20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
 
 /* reusa estilo de card/lista similar a rStyles.css */
 .card, .list-item { background:#fff; border-radius:8px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.06); }
@@ -23,6 +50,24 @@ body { background:#c5c5c5; min-height:100vh; color:#222; }
 
 .card p, .list-item p { color:#444; margin:6px 0; }
 
+/* ----- Ajuste: posicionar ações no canto inferior direito no modo cartões ----- */
+/* aplica somente quando não está no modo lista */
+.cards-container:not(.list-mode) .card {
+    position: relative;          /* contexto para posicionamento absoluto das ações */
+    padding-bottom: 64px;        /* reserva espaço para os botões sem aumentar a altura visual */
+}
+
+.cards-container:not(.list-mode) .card-actions {
+    position: absolute;
+    right: 18px;                 /* alinha com a margem interna do card */
+    bottom: 14px;
+    margin-top: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* botão padrão de ações */
 .card-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
 .btn-primary { background:#771fb6; color:#fff; padding:8px 12px; border-radius:6px; border:none; cursor:pointer; }
 .btn-secondary { background:#6f6f6f; color:#fff; padding:8px 12px; border-radius:6px; border:none; cursor:pointer; }

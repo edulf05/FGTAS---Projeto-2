@@ -101,6 +101,21 @@ body {
     background: rgba(255,255,255,0.06);
 }
 
+.card p small,
+.list-item p small {
+    color: #666;         /* cinza */
+    font-size: 13px;     /* tamanho menor */
+    margin: 6px 0;
+    display: block;
+}
+
+/* opcional: reduzir peso do label dentro do small para manter contraste */
+.card p small strong,
+.list-item p small strong {
+    font-weight: 600;
+    color: #444;
+}
+
 /* ====== MODO LISTA ====== */
 .cards-container.list-mode {
     display: block;
@@ -171,6 +186,22 @@ body {
 
 /* mantém outros estilos */
 .cards-container.list-mode .card { transform: none; box-shadow: none; }
+
+ /* posiciona o botão de ação no canto inferior direito do card (modo cartões) */
+.cards-container:not(.list-mode) .card {
+    position: relative;          /* necessário para posicionamento absoluto do .card-actions */
+    padding-bottom: 64px;        /* reserva espaço para o botão sem quebrar layout */
+}
+
+.cards-container:not(.list-mode) .card-actions {
+    position: absolute;
+    right: 18px;                 /* alinha com a margem interna do card (mesmo padding) */
+    bottom: 14px;
+    margin-top: 0;               /* remove margem superior que poderia deslocar */
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
 
 /* ====== CARDS ====== */
 

@@ -66,6 +66,14 @@ function renderCards(rows) {
 
   rows.forEach(r => {
     const div = document.createElement('div');
+
+    // helper para campos do empregador
+    const empregadorHtml = (r.filtro_perfil === 'empregador') ? `
+      <p><strong>Nome Empregador:</strong> ${r.nome_empregador || ''}</p>
+      <p><strong>CNPJ:</strong> ${r.cnpj || ''}</p>
+      <p><strong>Telefone contato:</strong> ${r.telefone_contato || ''}</p>
+    ` : '';
+
     if (isList) {
       div.className = 'list-item';
       div.innerHTML = `
@@ -75,8 +83,11 @@ function renderCards(rows) {
           <p><strong>Forma:</strong> ${r.filtro_forma_atendimento}</p>
           <p><strong>Tipo:</strong> ${r.filtro_tipo_atendimento || (r.tipo_atendimento || '')}</p>
           <p><strong>Perfil:</strong> ${r.filtro_perfil}</p>
-          <p><strong>Gerado em:</strong> ${r.data_geracao ? new Date(r.data_geracao).toLocaleString() : ''}</p>
-          <p><strong>Última edição:</strong> ${r.data_edicao ? new Date(r.data_edicao).toLocaleString() : ''}</p>
+          ${empregadorHtml}
+           <p><strong>Gerado em:</strong> ${r.data_geracao ? new Date(r.data_geracao).toLocaleString() : ''}</p>
+           <p><strong>Última edição:</strong> ${r.data_edicao ? new Date(r.data_edicao).toLocaleString() : ''}</p>
+           <p><small><strong>Gerado em:</strong> ${r.data_geracao ? new Date(r.data_geracao).toLocaleString() : ''}</small></p>
+           <p><small><strong>Última edição:</strong> ${r.data_edicao ? new Date(r.data_edicao).toLocaleString() : ''}</small></p>
         </div>
         <div class="list-item-actions">
           <button class="download-btn" onclick="downloadRelatorio(${r.id_relatorio})">Download CSV</button>
@@ -90,8 +101,11 @@ function renderCards(rows) {
         <p><strong>Forma:</strong> ${r.filtro_forma_atendimento}</p>
         <p><strong>Tipo:</strong> ${r.filtro_tipo_atendimento || (r.tipo_atendimento || '')}</p>
         <p><strong>Perfil:</strong> ${r.filtro_perfil}</p>
-        <p><strong>Gerado em:</strong> ${r.data_geracao ? new Date(r.data_geracao).toLocaleString() : ''}</p>
-        <p><strong>Última edição:</strong> ${r.data_edicao ? new Date(r.data_edicao).toLocaleString() : ''}</p>
+        ${empregadorHtml}
+         <p><strong>Gerado em:</strong> ${r.data_geracao ? new Date(r.data_geracao).toLocaleString() : ''}</p>
+         <p><strong>Última edição:</strong> ${r.data_edicao ? new Date(r.data_edicao).toLocaleString() : ''}</p>
+         <p><small><strong>Gerado em:</strong> ${r.data_geracao ? new Date(r.data_geracao).toLocaleString() : ''}</small></p>
+         <p><small><strong>Última edição:</strong> ${r.data_edicao ? new Date(r.data_edicao).toLocaleString() : ''}</small></p>
         <div class="card-actions">
           <button class="btn-primary" onclick="downloadRelatorio(${r.id_relatorio})">Download CSV</button>
         </div>

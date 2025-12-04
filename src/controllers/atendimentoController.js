@@ -79,7 +79,8 @@ module.exports = {
           filtro_atendente: atendente.nome_usuario || null,
           filtro_forma_atendimento: body.forma_atendimento,
           filtro_perfil: body.perfil,
-          filtro_tipo_atendimento: body.tipo_atendimento  // <-- NOVO CAMPO
+          filtro_tipo_atendimento: body.tipo_atendimento,  // <-- NOVO CAMPO
+          atendimento_id: insertId // <-- referencia o atendimento recém-criado
         };
 
         await trx('relatorios_atendimentos').insert(relatorio);

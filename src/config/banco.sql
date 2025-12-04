@@ -99,3 +99,13 @@ ON DELETE RESTRICT;
 
 ALTER TABLE relatorios_atendimentos
 ADD COLUMN filtro_tipo_atendimento VARCHAR(255) NULL AFTER filtro_perfil;
+
+ALTER TABLE relatorios_atendimentos
+ADD COLUMN atendimento_id INT NULL AFTER usuario_matricula;
+
+ALTER TABLE relatorios_atendimentos
+ADD CONSTRAINT fk_relatorio_atendimento
+FOREIGN KEY (atendimento_id)
+REFERENCES atendimentos(id_atendimento)
+ON UPDATE CASCADE
+ON DELETE SET NULL;

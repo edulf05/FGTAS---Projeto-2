@@ -123,11 +123,10 @@
           <option value="teams">Teams</option>
           <option value="outra">Outra</option>
         </select>
-        <br>
-        <br>
+        <br><br>
 
         <label>Tipo de atendimento:</label>
-        <select type="editTipo" id="editTipo" required>
+        <select id="editTipo" required>
                 <option value="carteira-de-trabalho,-sd,-vagas">Carteira de Trabalho, SD, Vagas</option>
                 <option value="programa-gaúcho-do-artesanato">Programa Gaúcho do Artesanato</option>
                 <option value="vida-centro-humanístico">Vida Centro Humanístico</option>
@@ -136,8 +135,7 @@
                 <option value="informações-sobre-mercado-de-trabalho">Informações sobre mercado de trabalho</option>
                 <option value="outra">Outra</option>
         </select>
-        <br>
-        <br>
+        <br><br>
 
         <label>Perfil:</label>
         <select id="editPerfil" required>
@@ -149,8 +147,20 @@
           <option value="mercado-de-trabalho">Mercado de Trabalho</option>
           <option value="outra">Outra</option>
         </select>
-        <br>
-        <br>
+        <br><br>
+
+        <!-- NOVOS CAMPOS EDITÁVEIS -->
+        <div id="empregadorFields" style="display:none">
+          <label>Nome Empregador:</label>
+          <input type="text" id="editNomeEmpregador" placeholder="Nome do empregador">
+          <br><br>
+          <label>CNPJ:</label>
+          <input type="text" id="editCnpj" placeholder="00.000.000/0000-00">
+          <br><br>
+          <label>Telefone contato:</label>
+          <input type="tel" id="editTelefone" placeholder="(51) 99999-9999">
+          <br><br>
+        </div>
 
         <p><small>Data criação: <span id="createdAt"></span></small></p>
         <p><small>Última edição: <span id="editedAt"></span></small></p>
